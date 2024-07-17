@@ -1,0 +1,87 @@
+#!/usr/bin/env snakemake -s
+
+import os,re
+import subprocess
+
+sample_id_list = []
+for sample_id in config['single_end_libs']:
+    sample_id_list.append(sample_id)
+for sample_id in config['paired_end_libs']:
+    sample_id_list.append(sample_id)
+
+interval_list = glob_wildcards(os.path.join(config['intervals'],"{interval_id}/scattered.interval_list")).interval_id
+
+wildcard_constraints:
+    sample_id= '|'.join([re.escape(x) for x in sample_id_list]),
+    interval_id='|'.join([re.escape(x) for x in interval_list])
+
+rule all:
+    input:
+        vcf=expand("mutect2/{sample_id}_{interval_id}.somatic.vcf.gz",sample_id=sample_id_list,interval_id=interval_list),
+        vcf_idx=expand("mutect2/{sample_id}_{interval_id}.somatic.vcf.gz.tbi",sample_id=sample_id_list,interval_id=interval_list),
+        merged_vcf=expand("vcf_output/{sample_id}.vcf.gz",sample_id=sample_id_list),
+        stats_output=expand("vcf_output/{sample_id}.vcf.stats",sample_id=sample_id_list)
+
+rule mutect2:
+    input:
+        fasta=config['fasta'],
+        bam="aligned/{sample_id}.bam",
+        bai="aligned/{sample_id}.bam.bai",
+        interval=os.path.join(config['intervals'],"{interval_id}/scattered.interval_list")
+    output:
+        vcf="mutect2/{sample_id}_{interval_id}.somatic.vcf.gz",
+        vcf_idx="mutect2/{sample_id}_{interval_id}.somatic.vcf.gz.tbi" 
+    shell:
+        """
+        gatk Mutect2 -R {input.fasta} -I:tumor {input.bam}  -O {output.vcf} -L {input.interval}
+        gatk IndexFeatureFile -I {output.vcf}
+        """
+
+rule merge_vcfs:
+    input:
+        lambda wildcards: expand("mutect2/{{sample_id}}_{interval_id}.somatic.vcf.gz",sample_id=sample_id_list,interval_id=interval_list)
+    output:
+        merged_vcf="vcf_output/{sample_id}.vcf.gz"
+    params:
+        temp_dir=temp("{sample_id}_tmp/"),
+        sample="{sample_id}"
+    log:
+        "log/{sample_id}_merge_vcfs.log"
+    run:
+        cmd = ["gatk","GatherVcfs"]
+        vcf_list = []
+        # order interval list
+        # TODO: change to use the input
+        for i in range (1,51):
+            if i < 10:
+                index_file = os.path.join('mutect2',params.sample+'_temp_000'+str(i)+'_of_50.somatic.vcf.gz')
+            else:
+                index_file = os.path.join('mutect2',params.sample+'_temp_00'+str(i)+'_of_50.somatic.vcf.gz')
+            vcf_list.append(index_file)
+        for vcf in vcf_list:
+            cmd += ["-I",vcf]
+        cmd += ["-O",output.merged_vcf,"--TMP_DIR",params.temp_dir]
+        print(cmd)
+        subprocess.check_call(cmd)
+
+rule merge_stats_files:
+    input:
+        stat_files=lambda wildcards: expand("mutect2/{{sample_id}}_{interval_id}.somatic.vcf.gz.stats", sample_id=sample_id_list, interval_id=interval_list)
+    output:
+        stats_output="vcf_output/{sample_id}.vcf.stats"
+    params:
+        sid="{sample_id}"
+    run:
+        value_list = []
+        for stats_file in input.stat_files:
+            with open(stats_file,'r') as i:
+                data = i.readlines()
+            value = data[1].split('\t')[1].strip()
+            value_list.append(float(value))
+        output_file = os.path.join('vcf_output',params.sid+'.vcf.stats')
+        sum_value = sum(value_list)
+        with open(output_file,'w') as o:
+            o.write('statistic\tvalue\n')
+            o.write(f'callable\t{sum_value}\n')
+
+
