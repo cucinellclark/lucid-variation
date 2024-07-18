@@ -6,8 +6,8 @@ TARGET ?= /kb/deployment
 
 APP_SERVICE = app_service
 
-#WRAP_PYTHON_TOOL = wrap_python3
-#WRAP_PYTHON_SCRIPT = bash $(TOOLS_DIR)/$(WRAP_PYTHON3_TOOL).sh
+WRAP_PYTHON_TOOL = wrap_python3
+WRAP_PYTHON_SCRIPT = bash $(TOOLS_DIR)/$(WRAP_PYTHON3_TOOL).sh
 
 SRC_PERL = $(wildcard scripts/*.pl)
 BIN_PERL = $(addprefix $(BIN_DIR)/,$(basename $(notdir $(SRC_PERL))))
