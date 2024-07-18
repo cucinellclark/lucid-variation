@@ -56,18 +56,18 @@ if not paired_reads and not single_reads:
     print('Reads files not present in job data: exiting')
     sys.exit()
 
-# TODO: path to this data
+DATA_PATH = os.environ['SERVICE_DATA']
 reference_dict = {
-    'human': {
-        'fasta': '/home/ac.cucinell/LUCID/Variation/variation_pipeline/broad_genome_data/Homo_sapiens_assembly38.fasta',
-        'dict': '/home/ac.cucinell/LUCID/Variation/variation_pipeline/broad_genome_data/Homo_sapiens_assembly38.dict',
-        'indels': '/home/ac.cucinell/LUCID/Variation/variation_pipeline/broad_genome_data/Homo_sapiens_assembly38.known_indels.vcf.gz',
-        'intervals': '/home/ac.cucinell/LUCID/Variation/variation_pipeline/broad_genome_data/scattered_calling_intervals',
-        'funcotator': '/home/ac.cucinell/LUCID/Variation/variation_pipeline/broad_genome_data/funcotator_dataSources.v1.8.hg38.20230908s'
+    '9606.33': {
+        'fasta': f'{DATA_PATH}/Homo_sapiens_assembly38.fasta',
+        'dict': f'{DATA_PATH}/Homo_sapiens_assembly38.dict',
+        'indels': f'{DATA_PATH}/Homo_sapiens_assembly38.known_indels.vcf.gz',
+        'intervals': f'{DATA_PATH}/scattered_calling_intervals',
+        'funcotator': f'{DATA_PATH}/funcotator_dataSources.v1.8.hg38.20230908s'
     }
 }
 
-job_data = merge_jsons(job_data,reference_dict['human'])
+job_data = merge_jsons(job_data,reference_dict[job_data['reference_genome_id']])
 modify_sample_libs(job_data)
 
 with open(args.config_file,'w') as o:

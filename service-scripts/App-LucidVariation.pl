@@ -29,6 +29,7 @@ sub preflight
 
 }
 
+# TODO: download and upload workspace data
 sub process_variation
 {
     my($app, $app_def, $raw_params, $params) = @_;  
