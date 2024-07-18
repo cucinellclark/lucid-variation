@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
 import os, sys, glob, argparse
-import json
-import subprocess
+import json, subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--threads','-t',help='number of threads to use for tools',default='4')
-parser.add_argument('--config','-c',help='config file for snakemake file',default="job_config.json")
+parser.add_argument('--config','-c',help='config file for snakemake',default='job_config.json')
 
 args = parser.parse_args()
 print(args)
@@ -16,7 +15,6 @@ with open(args.config,'r') as i:
 
 config_path = os.path.realpath(args.config)
 
-print(config)
 single_end = []
 paired_end = []
 error = False
@@ -32,7 +30,7 @@ for sample_id in single_end:
 for sample_id in paired_end:
     if not os.path.exists(paired_end[sample_id]['read1']):
         error = True
-        print(f'{paired_end[sample_id]["read1"]} does not exist')
+        print(f'{single_end[sample_id]["read1"]} does not exist')
 if error:
     print('fix file issues')
     sys.exit()
@@ -46,57 +44,38 @@ if not os.path.exists(output_folder):
     os.mkdir(output_folder)
 os.chdir(output_folder)
 
-### Run alignment
-# - all output necessary for downstream programs should be put into the aligned directory
+### run snakemake for trim_galore
 if len(paired_end) > 0:
-    # run paired snakemake
+    # run paired 
     try:
-        cmd = ['align_paired.snk','--configfile',config_path,'-c',args.threads]
+        cmd = ['lvar-gatks-qa_paired.snk','--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:
         print(f'Error running paired snakemake:\n{e}\n')
         sys.exit()
 if len(single_end) > 0:
-    # run single snakemake
+    #run single
     try:
-        cmd = ['align_single.snk','--configfile',config_path,'-c',args.threads]
+        cmd = ['lvar-gatks-qa_single.snk','--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:
         print(f'Error running single snakemake:\n{e}\n')
         sys.exit()
 
-try:
-    cmd = ['mutect2.snk','--configfile',config_path,'-c','4']
-    print(' '.join(cmd))
-    subprocess.check_call(cmd)
-except Exception as e:
-    print(f'Error running snakemake mutect2:\n{e}\n')
-    sys.exit()
-
-try:
-    cmd = ['pileup_contamination.snk','--configfile',config_path,'-c','4']
-    print(' '.join(cmd))
-    subprocess.check_call(cmd)
-except Exception as e:
-    print(f'Error running snakemake pileup and contamination:\n{e}\n')
-    sys.exit()
-
-try:
-    cmd = ['process_vcf.snk','--configfile',config_path,'-c','4']
-    print(' '.join(cmd))
-    subprocess.check_call(cmd)
-except Exception as e:
-    print(f'Error running snakemake process vcf:\n{e}\n')
-    sys.exit()
-
-try:
-    cmd = ['funcotator.snk','--configfile',config_path,'-c','4']
-    print(' '.join(cmd))
-    subprocess.check_call(cmd)
-except Exception as e:
-    print(f'Error running snakemake funcotator:\n{e}\n')
-    sys.exit()
-
-### TODO: structural variation
+### write new job json
+new_config_path = os.path.join(os.path.dirname(config_path),'job_config_trimmed.json')
+new_config = json.loads(json.dumps(config))
+# single
+for tr in glob.glob('trimmed/*trimmed.fq.gz'):
+    sid = os.path.basename(tr).replace('_trimmed.fq.gz','')
+    new_config['single_end_libs'][sid]['read'] = os.path.realpath(tr)
+# paired
+for tr1 in glob.glob('trimmed/*val_1.fq.gz'):
+    sid = os.path.basename(tr1).replace('_val_1.fq.gz','')
+    tr2 = os.path.join(os.path.dirname(tr1),f'{sid}_val_2.fq.gz')
+    new_config['paired_end_libs'][sid]['read1'] = os.path.realpath(tr1)
+    new_config['paired_end_libs'][sid]['read2'] = os.path.realpath(tr2)
+with open(new_config_path,'w') as o:
+    json.dump(new_config,o)
