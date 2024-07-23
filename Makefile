@@ -37,9 +37,13 @@ TPAGE_ARGS = --define kb_top=$(TARGET) --define kb_runtime=$(DEPLOY_RUNTIME) --d
 	--define kb_service_port=$(SERVICE_PORT) --define kb_service_dir=$(SERVICE_DIR) \
 	--define kb_sphinx_port=$(SPHINX_PORT) --define kb_sphinx_host=$(SPHINX_HOST) \
 	--define kb_starman_workers=$(STARMAN_WORKERS) \
-	--define kb_starman_max_requests=$(STARMAN_MAX_REQUESTS)
+	--define kb_starman_max_requests=$(STARMAN_MAX_REQUESTS) \
+    --define lvar_service_data=$(SERVICE_DATA)
 
 all: bin 
+
+build-libs: 
+	$(TPAGE) $(TPAGE_BUILD_ARGS) $(TPAGE_ARGS) AppConfig.pm.tt > lib/Bio/P3/LucidVariation/AppConfig.pm
 
 bin: $(BIN_PERL) $(BIN_SERVICE_PERL) $(BIN_SERVICE_PYTHON) 
 
