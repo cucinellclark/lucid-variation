@@ -71,7 +71,7 @@ sub process_variation
     ### TODO: make QA a separate repo
 
     ### TODO: change prepare_config.py or add data locations to jobdesc.json
-
+    my $nparams = { single_end_libs => [], paired_end_libs => [], srr_libs => [] };
     $readset->visit_libraries(sub { my($pe) = @_;
 				    my $lib = {
 					read1 => abs_path($pe->{read_path_1}),
