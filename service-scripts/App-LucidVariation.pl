@@ -68,6 +68,31 @@ sub process_variation
 
     my $parallel = $ENV{P3_ALLOCATED_CPU};
 
+    ### TODO: make QA a separate repo
+
+    ### TODO: change prepare_config.py or add data locations to jobdesc.json
+
+    $readset->visit_libraries(sub { my($pe) = @_;
+				    my $lib = {
+					read1 => abs_path($pe->{read_path_1}),
+					read2 => abs_path($pe->{read_path_2}),
+					(exists($pe->{sample_id}) ? (sample_id => $pe->{sample_id}) : ()),
+                    (exists($pe->{condition}) ? (condition => $pe->{condition}) : ())
+					};
+				    push(@{$nparams->{paired_end_libs}}, $lib);
+				},
+			      sub {
+				  my($se) = @_;
+				  my $lib = {
+				      read => abs_path($se->{read_path}),
+				      (exists($se->{sample_id}) ? (sample_id => $se->{sample_id}) : ()),
+                      (exists($se->{condition}) ? (condition => $se->{condition}) : ())
+				      };
+				  push(@{$nparams->{single_end_libs}}, $lib);
+			      },
+			     );
+    $params->{$_} = $nparams->{$_} foreach keys %$nparams;
+
     #
     # Write job description.
     #  
@@ -76,11 +101,7 @@ sub process_variation
     print JDESC JSON::XS->new->pretty(1)->encode($params);
     close(JDESC);
 
-    die "Testing writing job json\n";
-
-    ### TODO: make QA a separate repo
-
-    ### TODO: change prepare_config.py or add data locations to jobdesc.json
+    die "Testing modification of job json\n";
 
     # Prepare config file
     # - assuming previous bvbrc setup
