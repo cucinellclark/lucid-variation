@@ -38,6 +38,8 @@ sub process_variation
     
     print 'Proc lucid variation ', Dumper($app_def, $raw_params, $params);
 
+    my $params_copy = Clone::clone($params);
+
     my $token = $app->token();
     my $ws = $app->workspace();
 
@@ -99,6 +101,9 @@ sub process_variation
     # add service data to params
     $params->{service_data} = lvar_service_data;
 
+    # change output path to working directory
+    $params->{output_path} = "$work_dir/$params->{output_folder}";
+
     #
     # Write job description.
     #  
@@ -127,4 +132,6 @@ sub process_variation
     {
         die "run_variation.py failed: @var_cmd\n";
     }
+
+    # upload data to workspace using original job config
 }
