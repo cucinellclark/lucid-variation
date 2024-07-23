@@ -51,6 +51,7 @@ sub process_variation
 
     # download reads
     my $readset = Bio::KBase::AppService::ReadSet->create_from_asssembly_params($params,1);
+    print "test1:\n", Dumper ($readset);
 
     my($ok, $errs, $comp_size, $uncomp_size) = $readset->validate($app->workspace);
     
@@ -60,8 +61,11 @@ sub process_variation
     }
 
     $readset->localize_libraries($stage_dir);
+    print "test2:\n", Dumper ($readset);
     $readset->stage_in($app->workspace); 
+    print "test3:\n", Dumper ($readset);
 
+    die "";
     my $data_api = Bio::KBase::AppService::AppConfig->data_api_url;
     my $dat = { data_api => $data_api };
     my $sstring = encode_json($dat);
@@ -80,7 +84,7 @@ sub process_variation
                     (exists($pe->{condition}) ? (condition => $pe->{condition}) : ())
 					};
                     print "PAIRED LIB\n";
-                    warn Dumper ($lib);
+                    warn Dumper ($pe);
 				    push(@{$nparams->{paired_end_libs}}, $lib);
 				},
 			      sub {
