@@ -62,8 +62,6 @@ sub process_variation
     $readset->localize_libraries($stage_dir);
     $readset->stage_in($app->workspace); 
 
-    die "TESTING DOWNLOAD READS: TERMINATE\n";
-
     my $data_api = Bio::KBase::AppService::AppConfig->data_api_url;
     my $dat = { data_api => $data_api };
     my $sstring = encode_json($dat);
@@ -73,10 +71,12 @@ sub process_variation
     #
     # Write job description.
     #  
-    my $jdesc = "$cwd/jobdesc.json";
+    my $jdesc = "$work_dir/jobdesc.json";
     open(JDESC, ">", $jdesc) or die "Cannot write $jdesc: $!";
     print JDESC JSON::XS->new->pretty(1)->encode($params);
     close(JDESC);
+
+    die "Testing writing job json\n";
 
     ### TODO: make QA a separate repo
 
