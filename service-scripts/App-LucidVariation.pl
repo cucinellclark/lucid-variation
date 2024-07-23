@@ -79,6 +79,8 @@ sub process_variation
 					(exists($pe->{sample_id}) ? (sample_id => $pe->{sample_id}) : ()),
                     (exists($pe->{condition}) ? (condition => $pe->{condition}) : ())
 					};
+                    print "PAIRED LIB\n";
+                    warn Dumper ($lib);
 				    push(@{$nparams->{paired_end_libs}}, $lib);
 				},
 			      sub {
