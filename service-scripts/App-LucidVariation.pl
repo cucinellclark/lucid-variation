@@ -74,7 +74,7 @@ sub process_variation
     #  
     my $jdesc = "$cwd/jobdesc.json";
     open(JDESC, ">", $jdesc) or die "Cannot write $jdesc: $!";
-    print JDESC JSON::XS->new->pretty(1)->encode($params_to_app);
+    print JDESC JSON::XS->new->pretty(1)->encode($params);
     close(JDESC);
 
     ### TODO: make QA a separate repo
@@ -87,7 +87,7 @@ sub process_variation
     # parser.add_argument('--config_file',help="Output name for the generated snakemake config file",default='job_config.json')
     my $job_config = "$cwd/job_config.json"; 
     my @prep_cmd = ('lvar-gatks-prepare_config','--job_json',$jdesc,'--config_file',$job_config);
-    warn Dumper (\@prep_cmd, $params_to_app);
+    warn Dumper (\@prep_cmd, $params);
     my $prep_ok = run(\@prep_cmd);
 
     if (!$prep_ok) 
