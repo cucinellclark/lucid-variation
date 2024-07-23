@@ -5,6 +5,7 @@
 use Bio::KBase::AppService::AppScript;
 use Bio::KBase::AppService::AppConfig;
 use Bio::KBase::AppService::ReadSet;
+use Bio::P3::LucidVariation::AppConfig qw(lvar_service_data);
 
 use strict;
 use Data::Dumper;
@@ -95,6 +96,9 @@ sub process_variation
 			     );
     $params->{$_} = $nparams->{$_} foreach keys %$nparams;
 
+    # add service data to params
+    $params->{service_data} = lvar_service_data;
+
     #
     # Write job description.
     #  
@@ -102,7 +106,7 @@ sub process_variation
     open(JDESC, ">", $jdesc) or die "Cannot write $jdesc: $!";
     print JDESC JSON::XS->new->pretty(1)->encode($params);
     close(JDESC);
-
+    die "testing service data\n";
     # Prepare config file
     # - assuming previous bvbrc setup
     # parser.add_argument('--job_json',help="Job Json file with samples, reference genome id, conditions, etc",required=True)
