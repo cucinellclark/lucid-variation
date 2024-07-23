@@ -69,7 +69,7 @@ sub process_variation
     # parser.add_argument('--job_json',help="Job Json file with samples, reference genome id, conditions, etc",required=True)
     # parser.add_argument('--config_file',help="Output name for the generated snakemake config file",default='job_config.json')
     my $job_config = "$cwd/job_config.json" 
-    my @prep_cmd = ('prepare_config.py','--job_json',$jdesc,'--config_file',$job_config);
+    my @prep_cmd = ('lvar-gatks-prepare_config','--job_json',$jdesc,'--config_file',$job_config);
     warn Dumper (\@prep_cmd, $params_to_app);
     my $prep_ok = run(\@prep_cmd);
 
@@ -79,7 +79,7 @@ sub process_variation
     }
     die 'testing prepare config';
 
-    my @var_cmd = ('run_variation.py','--config',$job_config);
+    my @var_cmd = ('lvar-gatks-run_variation','--config',$job_config);
     my $var_ok = run(\@var_cmd);
     if (!$var_ok)
     {
