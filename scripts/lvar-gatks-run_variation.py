@@ -51,7 +51,7 @@ os.chdir(output_folder)
 if len(paired_end) > 0:
     # run paired snakemake
     try:
-        cmd = ['lvar-gatks-align_paired.snk','--configfile',config_path,'-c',args.threads]
+        cmd = ['lvar-gatks-align_paired.snk.py','--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:
@@ -60,7 +60,7 @@ if len(paired_end) > 0:
 if len(single_end) > 0:
     # run single snakemake
     try:
-        cmd = ['lvar-gatks-align_single.snk','--configfile',config_path,'-c',args.threads]
+        cmd = ['lvar-gatks-align_single.snk.py','--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:
@@ -68,7 +68,7 @@ if len(single_end) > 0:
         sys.exit()
 
 try:
-    cmd = ['lvar-gatks-mutect2.snk','--configfile',config_path,'-c','4']
+    cmd = ['lvar-gatks-mutect2.snk.py','--configfile',config_path,'-c','4']
     print(' '.join(cmd))
     subprocess.check_call(cmd)
 except Exception as e:
@@ -76,7 +76,7 @@ except Exception as e:
     sys.exit()
 
 try:
-    cmd = ['lvar-gatks-pileup_contamination.snk','--configfile',config_path,'-c','4']
+    cmd = ['lvar-gatks-pileup_contamination.snk.py','--configfile',config_path,'-c','4']
     print(' '.join(cmd))
     subprocess.check_call(cmd)
 except Exception as e:
@@ -84,7 +84,7 @@ except Exception as e:
     sys.exit()
 
 try:
-    cmd = ['lvar-gatks-process_vcf.snk','--configfile',config_path,'-c','4']
+    cmd = ['lvar-gatks-process_vcf.snk.py','--configfile',config_path,'-c','4']
     print(' '.join(cmd))
     subprocess.check_call(cmd)
 except Exception as e:
@@ -92,7 +92,7 @@ except Exception as e:
     sys.exit()
 
 try:
-    cmd = ['lvar-gatks-funcotator.snk','--configfile',config_path,'-c','4']
+    cmd = ['lvar-gatks-funcotator.snk.py','--configfile',config_path,'-c','4']
     print(' '.join(cmd))
     subprocess.check_call(cmd)
 except Exception as e:
