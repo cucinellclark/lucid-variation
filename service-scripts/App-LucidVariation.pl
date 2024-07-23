@@ -34,7 +34,7 @@ sub process_variation
 {
     my($app, $app_def, $raw_params, $params) = @_;  
     
-    print 'Proc comparative systems ', Dumper($app_def, $raw_params, $params);
+    print 'Proc lucid variation ', Dumper($app_def, $raw_params, $params);
 
     my $token = $app->token();
     my $ws = $app->workspace();
@@ -43,8 +43,25 @@ sub process_variation
     my $cwd = File::Temp->newdir( CLEANUP => 0 ); 
 
     my $work_dir = "$cwd/work";    
+    my $stage_dir = "$cwd/stage";    
 
     -d $work_dir or mkdir $work_dir or die "Cannot mkdir $work_dir: $!";
+    -d $stage_dir or mkdir $stage_dir or die "Cannot mkdir $stage_dir: $!";
+
+    # download reads
+    my $readset = Bio::KBase::AppService::ReadSet->create_from_assembly_params($params,1);
+
+    my($ok, $errs, $comp_size, $uncomp_size) = $readset->validate($app->workspace);
+    
+    if (!$ok)
+    {
+        die "Readset failed to validate. Errors:\n\t" . join("\n\t", @$errs);
+    }
+
+    $readset->localize_libraries($stage_dir);
+    $readset->stage_in($app->workspace); 
+
+    die "TESTING DOWNLOAD READS: TERMINATE\n";
 
     my $data_api = Bio::KBase::AppService::AppConfig->data_api_url;
     my $dat = { data_api => $data_api };
