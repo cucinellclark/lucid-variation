@@ -40,7 +40,7 @@ TPAGE_ARGS = --define kb_top=$(TARGET) --define kb_runtime=$(DEPLOY_RUNTIME) --d
 	--define kb_starman_max_requests=$(STARMAN_MAX_REQUESTS) \
     --define lvar_service_data=$(SERVICE_DATA)
 
-all: bin 
+all: bin build-libs 
 
 build-libs: 
 	$(TPAGE) $(TPAGE_BUILD_ARGS) $(TPAGE_ARGS) AppConfig.pm.tt > lib/Bio/P3/LucidVariation/AppConfig.pm
