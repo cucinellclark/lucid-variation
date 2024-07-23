@@ -103,13 +103,11 @@ sub process_variation
     print JDESC JSON::XS->new->pretty(1)->encode($params);
     close(JDESC);
 
-    die "Testing modification of job json\n";
-
     # Prepare config file
     # - assuming previous bvbrc setup
     # parser.add_argument('--job_json',help="Job Json file with samples, reference genome id, conditions, etc",required=True)
     # parser.add_argument('--config_file',help="Output name for the generated snakemake config file",default='job_config.json')
-    my $job_config = "$cwd/job_config.json"; 
+    my $job_config = "$work_dir/modjob_config.json"; 
     my @prep_cmd = ('lvar-gatks-prepare_config','--job_json',$jdesc,'--config_file',$job_config);
     warn Dumper (\@prep_cmd, $params);
     my $prep_ok = run(\@prep_cmd);
