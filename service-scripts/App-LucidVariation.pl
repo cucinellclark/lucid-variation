@@ -85,7 +85,7 @@ sub process_variation
     # - assuming previous bvbrc setup
     # parser.add_argument('--job_json',help="Job Json file with samples, reference genome id, conditions, etc",required=True)
     # parser.add_argument('--config_file',help="Output name for the generated snakemake config file",default='job_config.json')
-    my $job_config = "$cwd/job_config.json" 
+    my $job_config = "$cwd/job_config.json"; 
     my @prep_cmd = ('lvar-gatks-prepare_config','--job_json',$jdesc,'--config_file',$job_config);
     warn Dumper (\@prep_cmd, $params_to_app);
     my $prep_ok = run(\@prep_cmd);
