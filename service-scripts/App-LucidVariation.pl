@@ -50,7 +50,7 @@ sub process_variation
     -d $stage_dir or mkdir $stage_dir or die "Cannot mkdir $stage_dir: $!";
 
     # download reads
-    my $readset = Bio::KBase::AppService::ReadSet->create_from_assembly_params($params,1);
+    my $readset = Bio::KBase::AppService::ReadSet->create_from_asssembly_params($params,1);
 
     my($ok, $errs, $comp_size, $uncomp_size) = $readset->validate($app->workspace);
     
