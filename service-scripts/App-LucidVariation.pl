@@ -120,7 +120,6 @@ sub process_variation
     {
         die "prepare_config.py failed: @prep_cmd\n";
     }
-    die 'testing prepare config';
 
     my @var_cmd = ('lvar-gatks-run_variation','--config',$job_config);
     my $var_ok = run(\@var_cmd);
