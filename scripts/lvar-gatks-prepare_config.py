@@ -56,7 +56,7 @@ if not paired_reads and not single_reads:
     print('Reads files not present in job data: exiting')
     sys.exit()
 
-DATA_PATH = job_data['lvar_service_data'] 
+DATA_PATH = job_data['service_data'] 
 reference_dict = {
     '9606.33': {
         'fasta': f'{DATA_PATH}/Homo_sapiens_assembly38.fasta',
