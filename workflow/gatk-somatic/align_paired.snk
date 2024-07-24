@@ -31,7 +31,7 @@ rule minimap2_alignment_paired:
         "log/{sample_id}_minimap2.log"
     run:
         sample_id = params.sample_id
-        minimap_cmd = ['minimap2','-ax',params.preset,'-t',str(threads),params.fasta,params.read1,params.read2,'-R',f"\"@RG\\tID:{sample_id}\\tPL:ILLUMINA\\tLB:LB1\\tSM:{sample_id}\"",'-o',output.tmp_sam]
+        minimap_cmd = ['minimap2','-ax',params.preset,'-t',str(threads),params.fasta,params.read1,params.read2,'-R',f"@RG\\tID:{sample_id}\\tPL:ILLUMINA\\tLB:LB1\\tSM:{sample_id}",'-o',output.tmp_sam]
         print(' '.join(minimap_cmd))
         subprocess.check_call(minimap_cmd)
         samtools_cmd = ['samtools','sort','-o',output.aligned_read,output.tmp_sam]
