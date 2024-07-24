@@ -138,8 +138,9 @@ sub process_variation
         die "prepare_config.py failed: @prep_cmd\n";
     }
 
+    my @var_cmd = ();
     if ($params->{recipe} eq 'gatk-somatic') {
-        my @var_cmd = ('lvar-gatks-run_variation','--config',$job_config);
+        @var_cmd = ('lvar-gatks-run_variation','--config',$job_config);
     }
     else {
         die "Unrecognized recipe: $params->{recipe}\n";
