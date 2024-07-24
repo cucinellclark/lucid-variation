@@ -73,7 +73,6 @@ sub process_variation
 
     ### TODO: make QA a separate repo
 
-    ### TODO: change prepare_config.py or add data locations to jobdesc.json
     my $nparams = { single_end_libs => [], paired_end_libs => [], srr_libs => [] };
     $readset->visit_libraries(sub { my($pe) = @_;
 				    my $lib = {
@@ -105,6 +104,19 @@ sub process_variation
     $params->{output_path} = "$work_dir/$params->{output_folder}";
 
     #
+    # Create json config file for the execution of this workflow.
+    # If we are in a production deployment, we can find the workflows
+    # by looking in $KB_TOP/workflows/app-name
+    # Otherwise they are in the module directory; this is indicated
+    # by the value of $KB_MODULE_DIR (note this is set for both
+    # deployed and dev-container builds; the deployment case
+    # is determined by the existence of $KB_TOP/workflows)
+    #
+    my $wf_dir = "$ENV{KB_TOP}/modules/$ENV{KB_MODULE_DIR}/workflow";
+    -d $wf_dir or die "Workflow directory $wf_dir does not exist";
+    $params->{wordflow_dir} = $wf_dir;
+
+    #
     # Write job description.
     #  
     my $jdesc = "$work_dir/jobdesc.json";
@@ -126,12 +138,17 @@ sub process_variation
         die "prepare_config.py failed: @prep_cmd\n";
     }
 
-    my @var_cmd = ('lvar-gatks-run_variation','--config',$job_config);
+    if ($params->{recipe} eq 'gatk-somatic') {
+        my @var_cmd = ('lvar-gatks-run_variation','--config',$job_config);
+    }
+    else {
+        die "Unrecognized recipe: $params->{recipe}\n";
+    }
     my $var_ok = run(\@var_cmd);
     if (!$var_ok)
     {
         die "run_variation.py failed: @var_cmd\n";
     }
 
-    # upload data to workspace using original job config
+    # TODO: upload data to workspace using original job config
 }

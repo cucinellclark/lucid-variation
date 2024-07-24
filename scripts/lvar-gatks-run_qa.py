@@ -15,6 +15,8 @@ with open(args.config,'r') as i:
 
 config_path = os.path.realpath(args.config)
 
+workflow_dir = config['workflow_dir']
+
 single_end = []
 paired_end = []
 error = False
@@ -48,7 +50,7 @@ os.chdir(output_folder)
 if len(paired_end) > 0:
     # run paired 
     try:
-        cmd = ['lvar-gatks-qa_paired.snk','--configfile',config_path,'-c',args.threads]
+        cmd = ['qa_paired.snk','--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:
@@ -57,7 +59,7 @@ if len(paired_end) > 0:
 if len(single_end) > 0:
     #run single
     try:
-        cmd = ['lvar-gatks-qa_single.snk','--configfile',config_path,'-c',args.threads]
+        cmd = ['qa_single.snk','--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:

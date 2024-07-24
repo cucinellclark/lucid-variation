@@ -16,6 +16,9 @@ with open(args.config,'r') as i:
 
 config_path = os.path.realpath(args.config)
 
+# workflow_dir is workflow folder + recipe
+workflow_dir = os.path.join(config['workflow_dir'],'gatk-somatic')
+
 print(config)
 single_end = []
 paired_end = []
@@ -51,7 +54,8 @@ os.chdir(output_folder)
 if len(paired_end) > 0:
     # run paired snakemake
     try:
-        cmd = ['lvar-gatks-align_paired.snk','--configfile',config_path,'-c',args.threads]
+        snkfile = os.path.join(workflow_dir,'align_paired.snk')
+        cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:
@@ -60,7 +64,8 @@ if len(paired_end) > 0:
 if len(single_end) > 0:
     # run single snakemake
     try:
-        cmd = ['lvar-gatks-align_single.snk','--configfile',config_path,'-c',args.threads]
+        snkfile = os.path.join(workflow_dir,'align_single.snk')
+        cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:
@@ -68,7 +73,8 @@ if len(single_end) > 0:
         sys.exit()
 
 try:
-    cmd = ['lvar-gatks-mutect2.snk','--configfile',config_path,'-c','4']
+    snkfile = os.path.join(workflow_dir,'mutect2.snk')
+    cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4']
     print(' '.join(cmd))
     subprocess.check_call(cmd)
 except Exception as e:
@@ -76,7 +82,8 @@ except Exception as e:
     sys.exit()
 
 try:
-    cmd = ['lvar-gatks-pileup_contamination.snk','--configfile',config_path,'-c','4']
+    snkfile = os.path.join(workflow_dir,'pileup_contamination.snk') 
+    cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4']
     print(' '.join(cmd))
     subprocess.check_call(cmd)
 except Exception as e:
@@ -84,7 +91,8 @@ except Exception as e:
     sys.exit()
 
 try:
-    cmd = ['lvar-gatks-process_vcf.snk','--configfile',config_path,'-c','4']
+    snkfile = os.path.join(workflow_dir,'process_vcf.snk')
+    cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4']
     print(' '.join(cmd))
     subprocess.check_call(cmd)
 except Exception as e:
@@ -92,7 +100,8 @@ except Exception as e:
     sys.exit()
 
 try:
-    cmd = ['lvar-gatks-funcotator.snk','--configfile',config_path,'-c','4']
+    snkfile = os.path.join(workflow_dir,'funcotator.snk')
+    cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4']
     print(' '.join(cmd))
     subprocess.check_call(cmd)
 except Exception as e:
