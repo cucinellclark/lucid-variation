@@ -114,7 +114,7 @@ sub process_variation
     #
     my $wf_dir = "$ENV{KB_TOP}/modules/$ENV{KB_MODULE_DIR}/workflow";
     -d $wf_dir or die "Workflow directory $wf_dir does not exist";
-    $params->{wordflow_dir} = $wf_dir;
+    $params->{workflow_dir} = $wf_dir;
 
     #
     # Write job description.
