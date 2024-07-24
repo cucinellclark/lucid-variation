@@ -44,7 +44,8 @@ sub process_variation
     my $ws = $app->workspace();
 
     # CLEANUP = 0 (dont delete), CLEANUP = 1 (delete)
-    my $cwd = File::Temp->newdir( CLEANUP => 0 ); 
+    #my $cwd = File::Temp->newdir( CLEANUP => 0 ); 
+    my $cmd = "/tmp/AmR8g5Sr7H";
 
     my $work_dir = "$cwd/work";    
     my $stage_dir = "$cwd/stage";    
