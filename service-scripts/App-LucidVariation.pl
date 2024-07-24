@@ -139,7 +139,7 @@ sub process_variation
     }
 
     my @var_cmd = ();
-    if ($params->{recipe} eq 'gatk-somatic') {
+    if ($params->{recipe} eq 'gatk_somatic') {
         @var_cmd = ('lvar-gatks-run_variation','--config',$job_config);
     }
     else {
