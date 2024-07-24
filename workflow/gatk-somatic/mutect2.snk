@@ -30,7 +30,8 @@ rule mutect2:
         interval=os.path.join(config['intervals'],"{interval_id}/scattered.interval_list")
     output:
         vcf="mutect2/{sample_id}_{interval_id}.somatic.vcf.gz",
-        vcf_idx="mutect2/{sample_id}_{interval_id}.somatic.vcf.gz.tbi" 
+        vcf_idx="mutect2/{sample_id}_{interval_id}.somatic.vcf.gz.tbi", 
+        stats="mutect2/{sample_id}_{interval_id}.somatic.vcf.gz.stats",
     shell:
         """
         cmd1="gatk Mutect2 -R {input.fasta} -I:tumor {input.bam}  -O {output.vcf} -L {input.interval}"
