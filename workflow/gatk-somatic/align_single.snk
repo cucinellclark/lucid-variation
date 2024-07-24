@@ -17,20 +17,24 @@ rule all:
 rule minimap2_alignment_single:
     input:
     output:
+        tmp_sam = temp('aligned/{sample_id}.sam'),
         aligned_read = 'aligned/{sample_id}.bam'
     params:
         preset = 'sr', # sr stands for short-read
         fasta = config['fasta'],
         read = lambda wildcards: config['single_end_libs'][wildcards.sample_id]['read'],
+        sample_id = lambda wildcards: wildcards.sample_id
     threads: 4
     log:
         "log/{sample_id}_minimap2.log"
-    shell:
-        """
-        cmd="minimap2 -ax {params.preset} -t {threads} {params.fasta} {params.read} -R "@RG\\\tID:{wildcards.sample_id}\\\tPL:ILLUMINA\\\tLB:LB1\\\tSM:{wildcards.sample_id}" | \
-        samtools sort -o {output.aligned_read} -"
-        echo $cmd
-        """ 
+    run:
+        sample_id = params.sample_id,
+        minimap_cmd = ['minimap2','-ax',params.preset,'-t',str(threads),params.fasta,params.read,'-R',f"\"@RG\\tID:{sample_id}\\tPL:ILLUMINA\\tLB:LB1\\tSM:{sample_id}\""]
+        print(' '.join(minimap_cmd))
+        subprocess.check_call(minimap_cmd)
+        samtools_cmd = ['samtools','sort','-o',output.aligned_read,output.tmp_sam]
+        print(' '.join(samtools_cmd))
+        subprocess.check_call(samtools_cmd)
 
 rule index_bam:
     input:
