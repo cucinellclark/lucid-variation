@@ -45,7 +45,7 @@ sub process_variation
 
     # CLEANUP = 0 (dont delete), CLEANUP = 1 (delete)
     #my $cwd = File::Temp->newdir( CLEANUP => 0 ); 
-    my $cmd = "/tmp/AmR8g5Sr7H";
+    my $cwd = "/tmp/AmR8g5Sr7H";
 
     my $work_dir = "$cwd/work";    
     my $stage_dir = "$cwd/stage";    
