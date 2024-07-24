@@ -27,7 +27,7 @@ rule minimap2_alignment_single:
         "log/{sample_id}_minimap2.log"
     shell:
         """
-        cmd="minimap2 -ax {params.preset} -t {threads} {params.fasta} {params.read} -R "@RG\\tID:{wildcards.sample_id}\\tPL:ILLUMINA\\tLB:LB1\\tSM:{wildcards.sample_id}" | \
+        cmd="minimap2 -ax {params.preset} -t {threads} {params.fasta} {params.read} -R "@RG\\\tID:{wildcards.sample_id}\\\tPL:ILLUMINA\\\tLB:LB1\\\tSM:{wildcards.sample_id}" | \
         samtools sort -o {output.aligned_read} -"
         echo $cmd
         """ 
