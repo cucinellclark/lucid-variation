@@ -33,8 +33,12 @@ rule mutect2:
         vcf_idx="mutect2/{sample_id}_{interval_id}.somatic.vcf.gz.tbi" 
     shell:
         """
-        gatk Mutect2 -R {input.fasta} -I:tumor {input.bam}  -O {output.vcf} -L {input.interval}
-        gatk IndexFeatureFile -I {output.vcf}
+        cmd1="gatk Mutect2 -R {input.fasta} -I:tumor {input.bam}  -O {output.vcf} -L {input.interval}"
+        echo $cmd1
+        eval $cmd1
+        cmd2="gatk IndexFeatureFile -I {output.vcf}"
+        echo $cmd2
+        eval $cmd2
         """
 
 rule merge_vcfs:
