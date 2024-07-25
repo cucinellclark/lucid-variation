@@ -15,7 +15,8 @@ with open(args.config,'r') as i:
 
 config_path = os.path.realpath(args.config)
 
-workflow_dir = config['workflow_dir']
+# workflow_dir is workflow folder + recipe
+workflow_dir = os.path.join(config['workflow_dir'],'quality-check')
 
 single_end = []
 paired_end = []
@@ -50,7 +51,8 @@ os.chdir(output_folder)
 if len(paired_end) > 0:
     # run paired 
     try:
-        cmd = ['qa_paired.snk','--configfile',config_path,'-c',args.threads]
+        snkfile = os.path.join(workflow_dir,'qa_paired.snk')
+        cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:
@@ -59,7 +61,8 @@ if len(paired_end) > 0:
 if len(single_end) > 0:
     #run single
     try:
-        cmd = ['qa_single.snk','--configfile',config_path,'-c',args.threads]
+        snkfile = os.path.join(workflow_dir,'qa_single.snk')
+        cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:

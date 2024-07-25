@@ -121,13 +121,6 @@
         "required": 0,
         "default": null,
         "type": "string"
-    },
-    {
-        "id": "contrasts",
-        "label": "Contrast list",
-        "required": 0,
-        "default": null,
-        "type": "string"
     }
   ]
 }
