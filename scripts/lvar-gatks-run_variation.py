@@ -18,6 +18,7 @@ config_path = os.path.realpath(args.config)
 
 # workflow_dir is workflow folder + recipe
 workflow_dir = os.path.join(config['workflow_dir'],'gatk-somatic')
+struct_dir = os.path.join(config['workflow_dir'],'structural-variation')
 
 print(config)
 single_end = []
@@ -108,4 +109,15 @@ except Exception as e:
     print(f'Error running snakemake funcotator:\n{e}\n')
     sys.exit()
 
-### TODO: structural variation
+### Strucutral variation tools
+if config['run_delly']:
+    try:
+        prep_delly = os.path.join(struct_dir,'prepare_delly_config.py')
+        prep_cmd = ['python3',prep_delly,'-c',config_path]
+        print(' '.join(prep_cmd))
+        snkfile_delly = os.path.join(struct_dir,'delly.snk')
+        cmd = ['snakemake','-s',snkfile_delly,'--configfile',config_path,'-c','4']
+        print(' '.join(cmd))
+    except Exception as e:
+        print(f'Error running snakemake delly:\n{e}\n')
+        sys.exit()

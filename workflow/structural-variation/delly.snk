@@ -1,0 +1,49 @@
+import os, re
+import subprocess
+
+'''
+Runs the delly structural variation tool
+Outputs a bcf file for every sample that is not a control sample
+Assumes all conditions are compared to the control condition
+Calls a singularity file that has all necessary delly dependencies
+https://github.com/dellytools/delly
+'''
+
+sample_id_list = []
+non_control_samples = []
+for sample_id in config['single_end_libs']:
+    sample_id_list.append(sample_id)
+    if config['single_end_libs']['condition'] != 'control':
+        non_control_samples.append(sample_id)
+for sample_id in config['paired_end_libs']:
+    sample_id_list.append(sample_id)
+    if config['paired_end_libs']['condition'] != 'control':
+        non_control_samples.append(sample_id)
+
+wildcard_constraints:
+    sample_id= '|'.join([re.escape(x) for x in sample_id_list])
+
+delly_data = pd.read_csv('delly_sample_table.txt',sep='\t')
+output_files = delly_data.Output.tolist()
+
+delly_sif = '/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/delly/delly_v1.2.6.sif'
+
+#delly call -o Fibroblast_DNA_A_delly.bcf -g ../variation_pipeline/broad_genome_data/Homo_sapiens_assembly38.fasta ../LucidPipeline/Forrester_12_DNASeq/aligned/Fibroblast_DNA_A_TCTTGTCGGC-CCACCTGTGT.bam ../LucidPipeline/Forrester_12_DNASeq/aligned/Fibroblast_DNA_2_CACACAGTAT-TTGAGCCTAA.bam 
+rule all:
+    input:
+        expand("delly_output/{sample_id}.bcf",sample_id=non_control_samples)
+
+rule create_bcf:
+    input:
+    output:
+        bcf_file = "delly_output/{sample_id}.bcf",sample_id=non_control_samples)
+    params:
+        fasta = config['fasta']
+    run:
+        for idx, row in delly_data.iterrows():
+            output_bcf = row['Output']
+            cond_bam = row['ConditionBam']
+            control_bams = row['ControlBams']
+            delly_cmd = ['singularity','exec',delly_sif,'delly','call','-o',output.bcf_file,'-g',params.fasta,cond_bam,control_bams]
+            print(' '.join(delly_cmd))
+            subprocess.check_call(delly_cmd)
