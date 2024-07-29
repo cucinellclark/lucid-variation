@@ -58,7 +58,7 @@ if len(paired_end) > 0:
         snkfile = os.path.join(workflow_dir,'align_paired.snk')
         cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
-        subprocess.check_call(cmd)
+        #subprocess.check_call(cmd)
     except Exception as e:
         print(f'Error running paired snakemake:\n{e}\n')
         sys.exit()
@@ -68,7 +68,7 @@ if len(single_end) > 0:
         snkfile = os.path.join(workflow_dir,'align_single.snk')
         cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c',args.threads]
         print(' '.join(cmd))
-        subprocess.check_call(cmd)
+        #subprocess.check_call(cmd)
     except Exception as e:
         print(f'Error running single snakemake:\n{e}\n')
         sys.exit()
