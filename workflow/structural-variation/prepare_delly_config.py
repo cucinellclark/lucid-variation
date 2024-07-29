@@ -44,6 +44,8 @@ for cond in condition_dict:
         data = [output,cond,'control',sample_bam,','.join(control_bams)]
         data_list.append(data)
 
+print(f'curr dir {os.getcwd()}')
+
 data_df = pd.DataFrame(data_list)
 data_df.columns = ['Output','Condition','Control','ConditionBam','ControlBams']
 
