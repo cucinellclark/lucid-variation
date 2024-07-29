@@ -36,7 +36,7 @@ rule all:
 rule create_bcf:
     input:
     output:
-        bcf_file = "delly_output/{sample_id}.bcf",sample_id=non_control_samples)
+        bcf_file = "delly_output/{sample_id}.bcf"
     params:
         fasta = config['fasta']
     run:
