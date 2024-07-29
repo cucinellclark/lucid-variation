@@ -13,11 +13,11 @@ sample_id_list = []
 non_control_samples = []
 for sample_id in config['single_end_libs']:
     sample_id_list.append(sample_id)
-    if config['single_end_libs']['condition'] != 'control':
+    if config['single_end_libs'][sample_id]['condition'] != 'control':
         non_control_samples.append(sample_id)
 for sample_id in config['paired_end_libs']:
     sample_id_list.append(sample_id)
-    if config['paired_end_libs']['condition'] != 'control':
+    if config['paired_end_libs'][sample_id]['condition'] != 'control':
         non_control_samples.append(sample_id)
 
 wildcard_constraints:
