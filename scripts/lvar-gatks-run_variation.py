@@ -115,6 +115,7 @@ if config['run_delly']:
         prep_delly = os.path.join(struct_dir,'prepare_delly_config.py')
         prep_cmd = ['python3',prep_delly,'-c',config_path]
         print(' '.join(prep_cmd))
+        subprocess.check_call(prep_cmd)
         snkfile_delly = os.path.join(struct_dir,'delly.snk')
         cmd = ['snakemake','-s',snkfile_delly,'--configfile',config_path,'-c','4']
         print(' '.join(cmd))

@@ -45,7 +45,7 @@ sub process_variation
 
     # CLEANUP = 0 (dont delete), CLEANUP = 1 (delete)
     #my $cwd = File::Temp->newdir( CLEANUP => 0 ); 
-    my $cwd = "/tmp/UF4PbpoJZD"; # use existing folder for testing, skip steps 
+    my $cwd = "/tmp/lvar_fibro"; # use existing folder for testing, skip steps 
 
     my $work_dir = "$cwd/work";    
     my $stage_dir = "$cwd/stage";    
