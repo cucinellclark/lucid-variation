@@ -77,7 +77,7 @@ try:
     snkfile = os.path.join(workflow_dir,'mutect2.snk')
     cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4']
     print(' '.join(cmd))
-    subprocess.check_call(cmd)
+    #subprocess.check_call(cmd)
 except Exception as e:
     print(f'Error running snakemake mutect2:\n{e}\n')
     sys.exit()
@@ -86,7 +86,7 @@ try:
     snkfile = os.path.join(workflow_dir,'pileup_contamination.snk') 
     cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4']
     print(' '.join(cmd))
-    subprocess.check_call(cmd)
+    #subprocess.check_call(cmd)
 except Exception as e:
     print(f'Error running snakemake pileup and contamination:\n{e}\n')
     sys.exit()
@@ -95,7 +95,7 @@ try:
     snkfile = os.path.join(workflow_dir,'process_vcf.snk')
     cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4']
     print(' '.join(cmd))
-    subprocess.check_call(cmd)
+    #subprocess.check_call(cmd)
 except Exception as e:
     print(f'Error running snakemake process vcf:\n{e}\n')
     sys.exit()
@@ -104,7 +104,7 @@ try:
     snkfile = os.path.join(workflow_dir,'funcotator.snk')
     cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4']
     print(' '.join(cmd))
-    subprocess.check_call(cmd)
+    #subprocess.check_call(cmd)
 except Exception as e:
     print(f'Error running snakemake funcotator:\n{e}\n')
     sys.exit()
