@@ -115,11 +115,22 @@ if config['run_delly']:
         prep_delly = os.path.join(struct_dir,'prepare_delly_config.py')
         prep_cmd = ['python3',prep_delly,'-c',config_path]
         print(' '.join(prep_cmd))
-        subprocess.check_call(prep_cmd)
+        #subprocess.check_call(prep_cmd)
         snkfile_delly = os.path.join(struct_dir,'delly.snk')
         delly_cmd = ['snakemake','-s',snkfile_delly,'--configfile',config_path,'-c','4']
         print(' '.join(delly_cmd))
-        subprocess.check_call(delly_cmd)
+        #subprocess.check_call(delly_cmd)
     except Exception as e:
         print(f'Error running snakemake delly:\n{e}\n')
+        sys.exit()
+    try:
+        prep_delly = os.path.join(struct_dir,'prepare_delly_config.py')
+        prep_cmd = ['python3',prep_delly,'-c',config_path]
+        print(' '.join(prep_cmd))
+        #subprocess.check_call(prep_cmd)
+        snkfile_manta = os.path.join(struct_dir,'manta.snk')
+        manta_cmd = ['snakemake','-s',snkfile_manta,'--configfile',config_path,'-c','4']
+        print(' '.join(manta_cmd))
+        subprocess.check_call(manta_cmd)
+    except Exception as mantaprint(f'Error running snakemake manta:\n{e}\n')
         sys.exit()
