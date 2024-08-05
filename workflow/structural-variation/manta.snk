@@ -38,7 +38,7 @@ rule run_manta:
         # TODO: change for multiple normals
         config_cmd = os.path.join(MANTA_PATH,'configManta.py')
         for idx, row in manta_data.iterrows():
-            cmd = [config_cmd,'--normalBam',row['ControlBams'],'--tumorBam',row['ConditionBam'],'--referenceFastia',params.fasta,'--runDir',row['Condition']]     
+            cmd = [config_cmd,'--normalBam',row['ControlBams'],'--tumorBam',row['ConditionBam'],'--referenceFasta',params.fasta,'--runDir',row['Condition']]     
             subprocess.check_call(cmd)
 
 '''
