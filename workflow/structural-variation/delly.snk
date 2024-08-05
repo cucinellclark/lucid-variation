@@ -28,6 +28,8 @@ delly_data = pd.read_csv('delly_sample_table.txt',sep='\t')
 output_files = delly_data.Output.tolist()
 
 delly_sif = '/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/delly/delly_v1.2.6.sif'
+#/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/delly_src/delly
+delly_exec = '/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/delly_src/delly'
 
 #delly call -o Fibroblast_DNA_A_delly.bcf -g ../variation_pipeline/broad_genome_data/Homo_sapiens_assembly38.fasta ../LucidPipeline/Forrester_12_DNASeq/aligned/Fibroblast_DNA_A_TCTTGTCGGC-CCACCTGTGT.bam ../LucidPipeline/Forrester_12_DNASeq/aligned/Fibroblast_DNA_2_CACACAGTAT-TTGAGCCTAA.bam 
 rule all:
@@ -45,6 +47,6 @@ rule create_bcf:
             output_bcf = row['Output']
             cond_bam = row['ConditionBam']
             control_bams = row['ControlBams']
-            delly_cmd = ['singularity','exec',delly_sif,'delly','call','-o',output.bcf_file,'-g',params.fasta,cond_bam,control_bams]
+            delly_cmd = [delly_exec,'call','-o',output.bcf_file,'-g',params.fasta,cond_bam,control_bams]
             print(' '.join(delly_cmd))
             subprocess.check_call(delly_cmd)
