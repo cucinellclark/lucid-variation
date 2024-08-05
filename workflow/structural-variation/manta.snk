@@ -1,0 +1,52 @@
+import os, re
+import subprocess
+import pandas as pd
+
+#/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/manta_src/manta-1.6.0.centos6_x86_64/lib/python
+MANTA_PATH="/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/manta_src/manta-1.6.0.centos6_x86_64/bin"
+
+sample_id_list = []
+non_control_samples = []
+for sample_id in config['single_end_libs']:
+    sample_id_list.append(sample_id)
+    if config['single_end_libs'][sample_id]['condition'] != 'control':
+        non_control_samples.append(sample_id)
+for sample_id in config['paired_end_libs']:
+    sample_id_list.append(sample_id)
+    if config['paired_end_libs'][sample_id]['condition'] != 'control':
+        non_control_samples.append(sample_id)
+
+wildcard_constraints:
+    sample_id= '|'.join([re.escape(x) for x in sample_id_list])
+
+# TODO: change
+manta_data = pd.read_csv('delly_sample_table.txt',sep='\t')
+output_files = manta_data.Output.tolist()
+output_files = [x.replace('delly','manta') for x in output_files]
+
+rule all:
+    input:
+        expand("manta_output/{sample_id}/results/variants/somaticSV.vcf.gz",sample_id=non_control_samples)
+
+rule run_manta:
+    input:
+    output:
+        vcf_out = "manta_output/{sample_id}/results/variants/somaticSV.vcf.gz"
+    params:
+        fasta = config['fasta']
+    run:
+        # TODO: change for multiple normals
+        config_cmd = os.path.join(MANTA_PATH,'configManta.py')
+        for idx, row in manta_data.iterrows():
+            cmd = [config_cmd,'--normalBam',row['ControlBams'],'--tumorBam',row['ConditionBam'],'--referenceFastia',params.fasta,'--runDir',row['condition']]     
+            subprocess.check_call(cmd)
+
+'''
+${MANTA_INSTALL_PATH}/bin/configManta.py \
+--normalBam HCC1187BL.cram \
+--tumorBam HCC1187C.cram \
+--referenceFasta hg19.fa \
+--runDir ${MANTA_ANALYSIS_PATH}
+
+${MANTA_ANALYSIS_PATH}/runWorkflow.py -j 8
+'''

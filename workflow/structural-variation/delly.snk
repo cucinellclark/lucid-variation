@@ -6,7 +6,6 @@ import pandas as pd
 Runs the delly structural variation tool
 Outputs a bcf file for every sample that is not a control sample
 Assumes all conditions are compared to the control condition
-Calls a singularity file that has all necessary delly dependencies
 https://github.com/dellytools/delly
 '''
 
@@ -43,6 +42,7 @@ rule create_bcf:
     params:
         fasta = config['fasta']
     run:
+        # TODO: modify
         for idx, row in delly_data.iterrows():
             output_bcf = row['Output']
             cond_bam = row['ConditionBam']
