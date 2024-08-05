@@ -132,5 +132,6 @@ if config['run_delly']:
         manta_cmd = ['snakemake','-s',snkfile_manta,'--configfile',config_path,'-c','4']
         print(' '.join(manta_cmd))
         subprocess.check_call(manta_cmd)
-    except Exception as mantaprint(f'Error running snakemake manta:\n{e}\n')
+    except Exception as e:
+        print(f'Error running snakemake manta:\n{e}\n')
         sys.exit()
