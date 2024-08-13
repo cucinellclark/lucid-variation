@@ -41,10 +41,10 @@ for cond in condition_dict:
     for sample_id in condition_dict[cond]:
         sample_bam = bam_dict[sample_id]
         output = f'{sample_id}.bcf'
-        data = [output,cond,'control',sample_bam,','.join(control_bams)]
+        data = [output,sample_id,'control',cond,'control',sample_bam,','.join(control_bams)]
         data_list.append(data)
 
 data_df = pd.DataFrame(data_list)
-data_df.columns = ['Output','Condition','Control','ConditionBam','ControlBams']
+data_df.columns = ['Output','SampleID','ControlID','Condition','Control','ConditionBam','ControlBams']
 
-data_df.to_csv('delly_sample_table.txt',sep='\t',index=False)
+data_df.to_csv('structvar_sample_table.txt',sep='\t',index=False)

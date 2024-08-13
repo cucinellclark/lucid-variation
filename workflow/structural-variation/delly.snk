@@ -23,10 +23,9 @@ for sample_id in config['paired_end_libs']:
 wildcard_constraints:
     sample_id= '|'.join([re.escape(x) for x in sample_id_list])
 
-delly_data = pd.read_csv('delly_sample_table.txt',sep='\t')
+delly_data = pd.read_csv('structvar_sample_table.txt',sep='\t')
 output_files = delly_data.Output.tolist()
 
-delly_sif = '/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/delly/delly_v1.2.6.sif'
 #/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/delly_src/delly
 delly_exec = '/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/delly_src/delly'
 
