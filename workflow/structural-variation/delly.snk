@@ -20,10 +20,13 @@ for sample_id in config['paired_end_libs']:
     if config['paired_end_libs'][sample_id]['condition'] != 'control':
         non_control_samples.append(sample_id)
 
+print(f'work dir = {os.getcwd()}')
+print(f'{os.listdir()}')
+
 wildcard_constraints:
     sample_id= '|'.join([re.escape(x) for x in sample_id_list])
 
-delly_data = pd.read_csv('structvar_sample_table.txt',sep='\t')
+delly_data = pd.read_csv('structvar_sample_table_mod.txt',sep='\t')
 output_files = delly_data.Output.tolist()
 
 #/home/ac.cucinell/LUCID/Variation/StructuralVariantTest/delly_src/delly
@@ -39,13 +42,14 @@ rule create_bcf:
     output:
         bcf_file = "delly_output/{sample_id}.bcf"
     params:
-        fasta = config['fasta']
+        fasta = config['fasta'],
+        sample_id = '{sample_id}'
     run:
-        # TODO: modify
         for idx, row in delly_data.iterrows():
-            output_bcf = row['Output']
-            cond_bam = row['ConditionBam']
-            control_bams = row['ControlBams']
-            delly_cmd = [delly_exec,'call','-o',output.bcf_file,'-g',params.fasta,cond_bam,control_bams]
-            print(' '.join(delly_cmd))
-            subprocess.check_call(delly_cmd)
+            if row['SampleID'] == params.sample_id:
+                output_bcf = row['Output']
+                cond_bam = row['ConditionBam']
+                control_bams = row['ControlBams']
+                delly_cmd = [delly_exec,'call','-o',output.bcf_file,'-g',params.fasta,cond_bam] + control_bams.split(',')
+                print(' '.join(delly_cmd))
+                subprocess.check_call(delly_cmd)

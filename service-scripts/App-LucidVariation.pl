@@ -31,7 +31,7 @@ sub preflight
 
 }
 
-# TODO: download and upload workspace data
+# TODO: upload workspace data
 sub process_variation
 {
     my($app, $app_def, $raw_params, $params) = @_;  
@@ -44,8 +44,13 @@ sub process_variation
     my $ws = $app->workspace();
 
     # CLEANUP = 0 (dont delete), CLEANUP = 1 (delete)
-    #my $cwd = File::Temp->newdir( CLEANUP => 0 ); 
-    my $cwd = "/tmp/lvar_fibro"; # use existing folder for testing, skip steps 
+    my $cwd = File::Temp->newdir( CLEANUP => 0 ); 
+
+    if ($raw_params->{work_directory})
+    {
+        $cwd = $raw_params->{work_directory};
+        -d $cwd or mkdir $cwd or die "Cannot mkdir $cwd: $!";
+    }
 
     my $work_dir = "$cwd/work";    
     my $stage_dir = "$cwd/stage";    
@@ -71,6 +76,7 @@ sub process_variation
     my $sstring = encode_json($dat);
 
     my $parallel = $ENV{P3_ALLOCATED_CPU};
+    print "Number of threads: $parallel \n";
 
     ### TODO: make QA a separate repo
 
@@ -146,6 +152,7 @@ sub process_variation
     else {
         die "Unrecognized recipe: $params->{recipe}\n";
     }
+    print "RUNNING LOCALLY\n";
     my $var_ok = run(\@var_cmd);
     if (!$var_ok)
     {

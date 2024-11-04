@@ -42,13 +42,14 @@ rule mutect2:
         eval $cmd2
         """
 
+#temp_dir=temp("{sample_id}_tmp/"),
 rule merge_vcfs:
     input:
         lambda wildcards: expand("mutect2/{{sample_id}}_{interval_id}.somatic.vcf.gz",sample_id=sample_id_list,interval_id=interval_list)
     output:
         merged_vcf="vcf_output/{sample_id}.vcf.gz"
     params:
-        temp_dir=temp("{sample_id}_tmp/"),
+        temp_dir="{sample_id}_tmp/",
         sample="{sample_id}"
     log:
         "log/{sample_id}_merge_vcfs.log"
