@@ -53,7 +53,7 @@ os.chdir(output_folder)
 
 ### Run alignment
 # - all output necessary for downstream programs should be put into the aligned directory
-if False and len(paired_end) > 0:
+if len(paired_end) > 0:
     # run paired snakemake
     try:
         snkfile = os.path.join(workflow_dir,'align_paired.snk')
