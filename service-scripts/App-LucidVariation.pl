@@ -152,7 +152,7 @@ sub process_variation
     else {
         die "Unrecognized recipe: $params->{recipe}\n";
     }
-    print "RUNNING LOCALLY\n";
+
     my $var_ok = run(\@var_cmd);
     if (!$var_ok)
     {

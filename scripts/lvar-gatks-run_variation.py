@@ -57,7 +57,7 @@ if len(paired_end) > 0:
     # run paired snakemake
     try:
         snkfile = os.path.join(workflow_dir,'align_paired.snk')
-        cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','12','--nolock']
+        cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','12']
         print(' '.join(cmd))
         subprocess.check_call(cmd)
     except Exception as e:
@@ -103,7 +103,7 @@ except Exception as e:
 
 try:
     snkfile = os.path.join(workflow_dir,'funcotator.snk')
-    cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4','--rerun-incomplete']
+    cmd = ['snakemake','-s',snkfile,'--configfile',config_path,'-c','4']
     print(' '.join(cmd))
     subprocess.check_call(cmd)
 except Exception as e:
